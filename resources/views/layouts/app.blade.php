@@ -41,13 +41,13 @@
                     @guest
                         @if (Route::has('login'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('auth.login') }}">{{ __('Login') }}</a>
                             </li>
                         @endif
 
                         @if (Route::has('register'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                <a class="nav-link" href="{{ route('auth.register') }}">{{ __('Register') }}</a>
                             </li>
                         @endif
                     @else
@@ -58,13 +58,13 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#"
+                                <a class="dropdown-item" href="{{ route('auth.logout') }}"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}
                                 </a>
 
-                                <form id="logout-form" action="#" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('auth.logout') }}" method="get" class="d-none">
                                     @csrf
                                 </form>
                             </div>
