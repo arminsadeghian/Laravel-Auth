@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,14 +20,9 @@ class LoginController extends Controller
     |
     */
 
-//    use AuthenticatesUsers;
+    use ThrottlesLogins;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
+//    use AuthenticatesUsers;
 
     /**
      * Create a new controller instance.
@@ -47,6 +43,12 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $this->validateForm($request);
+
+        if ($this->hasTooManyLoginAttempts($request)) {
+            return $this->sendLockoutResponse($request);
+        }
+
+        $this->incrementLoginAttempts($request);
 
         if ($this->attemptLogin($request)) {
             return $this->sendSuccessResponse();
@@ -87,5 +89,10 @@ class LoginController extends Controller
     private function sendFailedLoginResponse()
     {
         return back()->with('failed', 'Email or password is incorrect');
+    }
+
+    protected function username()
+    {
+        return 'email';
     }
 }
