@@ -7,6 +7,8 @@
 
                 @include('messages.alerts')
 
+                @include('messages.verify-email')
+
                 <div class="card">
                     <div class="card-header">{{ __('Dashboard') }}</div>
 
