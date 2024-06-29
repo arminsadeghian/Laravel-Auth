@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\Recaptcha;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +72,12 @@ class LoginController extends Controller
         $request->validate([
             'email' => ['required', 'email', 'exists:users,email'],
             'password' => ['required'],
-        ]);
+            'g-recaptcha-response' => ['required', new Recaptcha()]
+        ],
+            [
+                'g-recaptcha-response.required' => 'Please check recaptcha'
+            ]
+        );
     }
 
     private function attemptLogin(Request $request)

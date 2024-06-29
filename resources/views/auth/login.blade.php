@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('link')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -64,6 +68,11 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="offset-sm-3 mt-3">
+                                @include('recaptcha')
+                            </div>
+
                         </form>
                     </div>
                 </div>

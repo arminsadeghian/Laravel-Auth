@@ -15,6 +15,8 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    @yield('link')
 </head>
 <body>
 <div id="app">
