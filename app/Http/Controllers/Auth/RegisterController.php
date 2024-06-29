@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\Recaptcha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,7 +67,13 @@ class RegisterController extends Controller
             'cellphone' => ['required', 'digits:11', 'unique:users,cellphone'],
             'email' => ['required', 'string', 'email', 'min:3', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+            'g-recaptcha-response' => ['required', new Recaptcha()]
+        ],
+
+            [
+                'g-recaptcha-response.required' => 'Please check recaptcha'
+            ]
+        );
     }
 
     private function create(array $data)
