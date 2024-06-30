@@ -64,6 +64,11 @@
                                         Login With Google
                                     </a>
 
+                                    <a href="{{ route('auth.magic.login.form') }}"
+                                       class="btn btn-primary">
+                                        Magic Login
+                                    </a>
+
                                     <a href="{{ route('auth.password.forgot.form') }}">Send password reset email</a>
 
                                     @if (Route::has('password.request'))
