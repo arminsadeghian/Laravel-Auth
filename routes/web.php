@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,4 +39,6 @@ Route::prefix('auth/')->group(function () {
     Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('auth.password.forgot');
     Route::get('password/reset', [ResetPasswordController::class, 'showResetForm'])->name('auth.password.reset.form');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('auth.password.reset');
+    Route::get('redirect/{provider}', [SocialController::class, 'redirectToProvider'])->name('auth.redirect.provider');
+    Route::get('{provider}/callback', [SocialController::class, 'providerCallback'])->name('auth.provider.callback');
 });
