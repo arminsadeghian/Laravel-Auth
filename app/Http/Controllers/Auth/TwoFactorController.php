@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Code;
 use App\Services\Auth\TwoFactorAuthentication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,23 +41,14 @@ class TwoFactorController extends Controller
         return view('auth.two-factor.enter-code');
     }
 
-    public function confirmCode(Request $request)
+    public function confirmCode(Code $request)
     {
-        $this->validateForm($request);
+        $request->validated();
 
         $response = $this->twoFactor->activate();
 
         return $response == $this->twoFactor::ACTIVATED
             ? redirect()->route('home')->with('success', 'Two-Factor activated')
             : back()->with('failed', 'Activation failed');
-    }
-
-    private function validateForm(Request $request)
-    {
-        $request->validate([
-            'code' => ['required', 'numeric', 'digits:5', 'exists:two_factors,code']
-        ], [
-            'code.digits' => 'Invalid code'
-        ]);
     }
 }

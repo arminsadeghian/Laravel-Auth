@@ -22,4 +22,9 @@ trait HasTwoFactor
         $this->has_two_factor = false;
         $this->save();
     }
+
+    public function hasTwoFactor()
+    {
+        return $this->has_two_factor;
+    }
 }

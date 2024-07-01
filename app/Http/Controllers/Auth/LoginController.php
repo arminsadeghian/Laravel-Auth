@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Code;
+use App\Models\User;
 use App\Rules\Recaptcha;
+use App\Services\Auth\TwoFactorAuthentication;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +33,7 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private TwoFactorAuthentication $twoFactor)
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
@@ -41,6 +44,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    public function showCodeForm()
+    {
+        return view('auth.two-factor.login-code');
+    }
+
     public function login(Request $request)
     {
         $this->validateForm($request);
@@ -49,13 +57,21 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        $this->incrementLoginAttempts($request);
-
-        if ($this->attemptLogin($request)) {
-            return $this->sendSuccessResponse();
+        if (!$this->isValidCredentials($request)) {
+            $this->incrementLoginAttempts($request);
+            $this->sendFailedLoginResponse();
         }
 
-        return $this->sendFailedLoginResponse();
+        $user = $this->getUser($request);
+
+        if ($user->hasTwoFactor()) {
+            $this->twoFactor->requestCode($user);
+            return $this->sendHasTwoFactorResponse();
+        }
+
+        Auth::login($user, $request->remember);
+
+        return $this->sendSuccessResponse();
     }
 
     public function logout()
@@ -80,9 +96,13 @@ class LoginController extends Controller
         );
     }
 
-    private function attemptLogin(Request $request)
+    public function confirmCode(Code $request)
     {
-        return Auth::attempt($request->only('email', 'password'), $request->filled('remember'));
+        $response = $this->twoFactor->login();
+
+        return $response == $this->twoFactor::AUTHENTICATED
+            ? $this->sendSuccessResponse()
+            : back()->with('failed', 'Invalid code');
     }
 
     private function sendSuccessResponse()
@@ -100,5 +120,20 @@ class LoginController extends Controller
     protected function username()
     {
         return 'email';
+    }
+
+    private function isValidCredentials(Request $request)
+    {
+        return Auth::validate($request->only(['email', 'password']));
+    }
+
+    private function getUser(Request $request)
+    {
+        return User::where('email', $request->email)->firstOrFail();
+    }
+
+    private function sendHasTwoFactorResponse()
+    {
+        return redirect()->route('auth.login.code.form');
     }
 }
