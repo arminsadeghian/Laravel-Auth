@@ -62,6 +62,11 @@ class TwoFactorAuthentication
         return static::AUTHENTICATED;
     }
 
+    public function resend()
+    {
+        return $this->requestCode($this->getUser());
+    }
+
     private function setSession(TwoFactor $code)
     {
         session([

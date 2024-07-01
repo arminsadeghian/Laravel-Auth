@@ -12,7 +12,7 @@ class TwoFactorController extends Controller
 {
     public function __construct(private TwoFactorAuthentication $twoFactor)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('resend');
     }
 
     public function showToggleForm()
@@ -39,6 +39,13 @@ class TwoFactorController extends Controller
     public function showEnterCodeForm()
     {
         return view('auth.two-factor.enter-code');
+    }
+
+    public function resend()
+    {
+        $this->twoFactor->resend();
+
+        return back()->with('success', 'Code resent');
     }
 
     public function confirmCode(Code $request)

@@ -51,6 +51,7 @@ Route::prefix('auth/')->group(function () {
     Route::get('two-factor/deactivate', [TwoFactorController::class, 'deactivate'])->name('auth.two.factor.deactivate');
     Route::get('two-factor/code', [TwoFactorController::class, 'showEnterCodeForm'])->name('auth.two.factor.code.form');
     Route::post('two-factor/code', [TwoFactorController::class, 'confirmCode'])->name('auth.two.factor.code');
+    Route::get('two-factor/resend', [TwoFactorController::class, 'resend'])->name('auth.two.factor.resend');
     Route::get('login/code', [LoginController::class, 'showCodeForm'])->name('auth.login.code.form');
     Route::post('login/code', [LoginController::class, 'confirmCode'])->name('auth.login.code');
 });

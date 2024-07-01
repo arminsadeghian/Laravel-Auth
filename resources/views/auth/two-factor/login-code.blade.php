@@ -29,6 +29,7 @@
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">
                                     <button class="btn btn-primary" type="submit">Login</button>
+                                    <a href="{{ route('auth.two.factor.resend') }}">Resend Code</a>
                                 </div>
                             </div>
 
