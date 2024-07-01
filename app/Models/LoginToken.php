@@ -30,6 +30,11 @@ class LoginToken extends Model
         return $this->created_at->diffInSeconds(now()) > self::TOKEN_EXPIRE_TIME;
     }
 
+    public function scopeExpired($query)
+    {
+        return $query->where('created_at', '<', now()->subSeconds(self::TOKEN_EXPIRE_TIME));
+    }
+
     public function getRouteKeyName()
     {
         return 'token';
