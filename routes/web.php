@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\MagicController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +46,10 @@ Route::prefix('auth/')->group(function () {
     Route::get('magic/login', [MagicController::class, 'showMagicForm'])->name('auth.magic.login.form');
     Route::post('magic/login', [MagicController::class, 'sendMagicLink'])->name('auth.magic.link.send');
     Route::get('magic/login/{token}', [MagicController::class, 'login'])->name('auth.magic.login');
+
+    Route::get('two-factor/toggle', [TwoFactorController::class, 'showToggleForm'])->name('auth.two.factor.toggle.form');
+    Route::get('two-factor/activate', [TwoFactorController::class, 'activate'])->name('auth.two.factor.activate');
+    Route::get('two-factor/deactivate', [TwoFactorController::class, 'deactivate'])->name('auth.two.factor.deactivate');
+    Route::get('two-factor/code', [TwoFactorController::class, 'showEnterCodeForm'])->name('auth.two.factor.code.form');
+    Route::post('two-factor/code', [TwoFactorController::class, 'confirmCode'])->name('auth.two.factor.code');
 });
